@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:http/http.dart' as http;
 import 'package:ikan/helpers/user_info.dart';
 import 'app_exception.dart';
@@ -12,6 +11,27 @@ class Api {
       final response = await http.post(Uri.parse(url),
           body: data,
           headers: {HttpHeaders.authorizationHeader: "Bearer $token"});
+      responseJson = _returnResponse(response);
+    } on SocketException {
+      throw FetchDataException('No Internet connection');
+    }
+    return responseJson;
+  }
+
+  Future<dynamic> put(dynamic url, dynamic data) async {
+    var token = await UserInfo().getToken();
+    var responseJson;
+    print(url);
+    print(data);
+    try {
+      final response = await http.put(
+        Uri.parse(url),
+        headers: {
+          HttpHeaders.authorizationHeader: "Bearer $token",
+          HttpHeaders.contentTypeHeader: "application/json"
+        },
+        body: data,
+      );
       responseJson = _returnResponse(response);
     } on SocketException {
       throw FetchDataException('No Internet connection');
@@ -37,7 +57,7 @@ class Api {
     var responseJson;
     try {
       final response = await http.delete(Uri.parse(url),
-          headers: {HttpHeaders.authorizationHeader: "Bearer  $token"});
+          headers: {HttpHeaders.authorizationHeader: "Bearer $token"});
       responseJson = _returnResponse(response);
     } on SocketException {
       throw FetchDataException('No Internet connection');

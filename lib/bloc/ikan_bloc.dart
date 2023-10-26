@@ -37,7 +37,8 @@ class IkanBloc {
 
   static Future<bool> updateIkan({required Ikan ikan}) async {
     String apiUrl = ApiUrl.updateIkan(ikan.id!);
-
+    print(apiUrl);
+    print(ikan);
     var body = {
       "nama": ikan.nama,
       "jenis": ikan.jenis,
@@ -45,9 +46,10 @@ class IkanBloc {
       "habitat": ikan.habitat,
     };
     print("Body : $body");
-    var response = await Api().post(apiUrl, body);
+    var response = await Api().put(apiUrl, jsonEncode(body));
+    print(response.body);
     var jsonObj = json.decode(response.body);
-    return jsonObj['data'];
+    return jsonObj['status'];
   }
 
   static Future<bool> deleteIkan({int? id}) async {
